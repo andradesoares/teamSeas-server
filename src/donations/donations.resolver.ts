@@ -1,4 +1,5 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
 import { DonationsService } from './donations.service';
 import { CreateDonationInput } from './dto/create-donation.input';
 import { UpdateDonationInput } from './dto/update-donation.input';
@@ -9,7 +10,8 @@ export class DonationsResolver {
 
   @Mutation('createDonation')
   create(
-    @Args('createDonationInput') createDonationInput: CreateDonationInput,
+    @Args('createDonationInput')
+    createDonationInput: Prisma.DonationCreateInput,
   ) {
     return this.donationsService.create(createDonationInput);
   }
