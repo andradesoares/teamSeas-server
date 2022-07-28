@@ -25,13 +25,27 @@ input UpdateDonationInput {
   id: Int!
 }
 
+input OrderByParams {
+  field: String
+  direction: String
+}
+
 type Query {
-  donations: [Donation]!
+  donations(orderBy: OrderByParams): [Donation]!
   donation(id: Int!): Donation
+  totalDonations: Int!
 }
 
 type Mutation {
   createDonation(createDonationInput: CreateDonationInput!): Donation!
   updateDonation(updateDonationInput: UpdateDonationInput!): Donation!
   removeDonation(id: Int!): Donation
+}
+
+type Result {
+  total: Int!
+}
+
+type Subscription {
+  totalUpdated: Result
 }

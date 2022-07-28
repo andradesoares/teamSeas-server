@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
+import { OrderByParams } from 'src/graphql';
 import { CreateDonationInput } from './dto/create-donation.input';
 import { UpdateDonationInput } from './dto/update-donation.input';
 
@@ -13,8 +14,11 @@ export class DonationsService {
     });
   }
 
-  findAll() {
-    return this.prisma.donation.findMany();
+  findAll(orderBy?: OrderByParams) {
+    const { field = 'createdAt', direction = 'desc' } = orderBy || {};
+    return this.prisma.donation.findMany({
+      orderBy: { [field]: direction },
+    });
   }
 
   findOne(id: number) {
@@ -23,6 +27,16 @@ export class DonationsService {
         id,
       },
     });
+  }
+
+  async getTotal() {
+    const response = await this.prisma.donation.aggregate({
+      _sum: {
+        count: true,
+      },
+    });
+
+    return response._sum.count;
   }
 
   update(id: number, updateDonationInput: UpdateDonationInput) {
